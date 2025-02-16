@@ -61,7 +61,7 @@ yarn-error.log*
 
 # Android
 *.apk
-*.ap_
+*.ap_ 
 *.cxx
 local.properties
 
