@@ -9,17 +9,13 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [cep, setCep] = useState<string>("");
 
   const handleRegister = () => {
-    // Usar valores padrões caso os campos estejam vazios
     const finalName = name || "Mariana";
     const finalSurname = surname || "Silveira";
     const finalEmail = email || "teste@teste.com";
     const finalPhone = phone || "82 99999-9999";
     const finalCep = cep || "57000-00";
 
-    // Passa os valores para a tela seguinte (Screen2)
     navigation.navigate("Screen2", { nome: finalName, sobrenome: finalSurname });
-
-    // Aqui você pode salvar esses dados ou continuar conforme necessário
   };
 
   return (
@@ -123,6 +119,18 @@ const styles = StyleSheet.create({
     color: "#1E90FF",
     marginTop: 12,
     textDecorationLine: "underline",
+  },
+  productButton: {
+    backgroundColor: "#1E90FF",
+    padding: 12,
+    borderRadius: 8,
+    width: "80%",
+    alignItems: "center",
+    marginTop: 15,
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "#fff",
   },
 });
 

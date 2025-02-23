@@ -5,6 +5,7 @@ import { RouteProp } from "@react-navigation/native";
 
 type RootStackParamList = {
   Screen2: { nome: string };
+  Screen3: undefined;
   Login: undefined;
 };
 
@@ -14,7 +15,7 @@ type Screen2Props = {
 };
 
 const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
-  const nome = route.params?.nome ?? "Usuário";  // Correção: Acessando o parâmetro 'nome'
+  const nome = route.params?.nome ?? "Usuário";  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -37,6 +38,12 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
         <Image source={{ uri: "https://via.placeholder.com/150" }} style={styles.productImage} />
         <Image source={{ uri: "https://via.placeholder.com/150" }} style={styles.productImage} />
       </View>
+
+      {/* Novo botão para ir para a Screen3 */}
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Screen3")}>
+        <Text style={styles.buttonText}>Ir para a próxima etapa</Text>
+      </TouchableOpacity>
+      
     </ScrollView>
   );
 };
@@ -101,6 +108,18 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     margin: 10,
+  },
+  button: {
+    marginTop: 20,
+    backgroundColor: "#1E90FF",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 

@@ -34,3 +34,51 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# React Native
+*.xcworkspace
+*.xcuserdata
+*.lock
+*.xcuserstate
+*.hmap
+*.ipa
+*.app
+
+# Android
+*.apk
+*.ap_
+*.cxx
+local.properties
+
+# iOS
+Pods/
+build/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+DerivedData/
+.idea/
+*.hmap
+*.ipa
+*.app
+*.dSYM.zip
+*.dSYM
