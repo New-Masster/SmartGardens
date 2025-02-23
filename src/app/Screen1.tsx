@@ -120,18 +120,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     textDecorationLine: "underline",
   },
-  productButton: {
-    backgroundColor: "#1E90FF",
-    padding: 12,
-    borderRadius: 8,
-    width: "80%",
-    alignItems: "center",
-    marginTop: 15,
-  },
-  buttonText: {
-    fontSize: 18,
-    color: "#fff",
-  },
 });
 
 export default Screen1;

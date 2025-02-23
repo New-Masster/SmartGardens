@@ -39,11 +39,9 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
         <Image source={{ uri: "https://via.placeholder.com/150" }} style={styles.productImage} />
       </View>
 
-      {/* Novo botão para ir para a Screen3 */}
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Screen3")}>
         <Text style={styles.buttonText}>Ir para a próxima etapa</Text>
       </TouchableOpacity>
-      
     </ScrollView>
   );
 };
