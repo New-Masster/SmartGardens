@@ -1,12 +1,14 @@
-import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, FlatList } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
+import { Button } from 'react-native-elements'; // Certifique-se de importar Button corretamente
 
 type RootStackParamList = {
   Screen2: { nome: string };
   Screen3: undefined;
   Login: undefined;
+  Screen4: { id: number; nome: string; imagens: string[]; preco: string; descricao: string };
 };
 
 type Screen2Props = {
@@ -15,16 +17,47 @@ type Screen2Props = {
 };
 
 const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
-  const nome = route.params?.nome ?? "Usuário";  
+  const nome = route.params?.nome ?? "Usuário";
+  const [selectedImageIndexes, setSelectedImageIndexes] = useState<{ [key: number]: number }>({});
+  const [quantidades, setQuantidades] = useState<{ [key: number]: number }>({});
+
+  const produtos = [
+    { id: 1, nome: "Bancada Hidropônica", imagens: [require("../assets/Bancada Hidropônica 0.png"), require("../assets/Bancada Hidropônica 1.png"), require("../assets/Bancada Hidropônica 2.png")], preco: "R$ 687,00", descricao: "Uma linda planta suculenta para decorar seu espaço." },
+    { id: 2, nome: "Caixa Hidropônica", imagens: [require("../assets/Caixa Hidropônica 0.png"), require("../assets/Caixa Hidropônica 1.png"), require("../assets/Caixa Hidropônica 2.png")], preco: "R$ 302,99", descricao: "Ideal para purificar o ar e decorar ambientes internos." },
+    { id: 3, nome: "Horta Hidropônica", imagens: [require("../assets/Horta Hidropônica 0.png"), require("../assets/Horta Hidropônica 1.png"), require("../assets/Horta Hidropônica 2.png")], preco: "R$ 59,90", descricao: "Orquídea elegante para dar um toque especial à decoração." }
+  ];
+
+  const handleImageChange = (productId: number, index: number, images: any[]) => {
+    setSelectedImageIndexes((prevIndexes) => ({
+      ...prevIndexes,
+      [productId]: (index + images.length) % images.length,
+    }));
+  };
+
+  const alterarQuantidade = (id: number, incremento: number) => {
+    setQuantidades((prev) => ({
+      ...prev,
+      [id]: Math.max(1, (prev[id] || 1) + incremento),
+    }));
+  };
+
+  const adicionarAoCarrinho = (produtoId: number) => {
+    console.log(`Produto ${produtoId} adicionado ao carrinho!`);
+  };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ImageBackground source={require("../assets/Fundo_usuario.png")} style={styles.background} imageStyle={{ opacity: 0.7 }}>
       <View style={styles.header}>
         <View style={styles.welcomeContainer}>
           <Text style={styles.welcomeText}>Olá, {nome}!</Text>
           <Text style={styles.subtitle}>Seja bem-vindo(a)!</Text>
         </View>
+
+        {/* Container do perfil e carrinho */}
         <View style={styles.profileContainer}>
+          <View style={styles.iconContainer}>
+            <Button icon={{ name: 'shopping-cart', color: '#FFF' }} buttonStyle={styles.iconButton} onPress={() => navigation.navigate("Screen3")} />
+          </View>
           <Image source={require("../assets/Usuario.png")} style={styles.profileImage} />
           <TouchableOpacity onPress={() => navigation.navigate("Login")} style={styles.logoutContainer}>
             <Text style={styles.logout}>Sair</Text>
@@ -32,94 +65,81 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
         </View>
       </View>
 
-      <Text style={styles.title}>Produtos em Ambientes Diferentes</Text>
-      <View style={styles.imageContainer}>
-        <Image source={{ uri: "https://via.placeholder.com/150" }} style={styles.productImage} />
-        <Image source={{ uri: "https://via.placeholder.com/150" }} style={styles.productImage} />
-        <Image source={{ uri: "https://via.placeholder.com/150" }} style={styles.productImage} />
+      <View style={styles.productsContainer}>
+        <Text style={styles.title}>Produtos</Text>
+        <FlatList
+          data={produtos}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.productContainer}>
+              <Text style={styles.productName}>{item.nome}</Text>
+              <Text style={styles.productPrice}>{item.preco}</Text>
+              <View style={styles.imageSliderContainer}>
+                <TouchableOpacity onPress={() => handleImageChange(item.id, (selectedImageIndexes[item.id] || 0) - 1, item.imagens)}>
+                  <Text style={styles.arrow}>{"<"}</Text>
+                </TouchableOpacity>
+                <Image source={item.imagens[selectedImageIndexes[item.id] || 0]} style={styles.productImage} />
+                <TouchableOpacity onPress={() => handleImageChange(item.id, (selectedImageIndexes[item.id] || 0) + 1, item.imagens)}>
+                  <Text style={styles.arrow}>{">"}</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.quantityContainer}>
+                <TouchableOpacity onPress={() => alterarQuantidade(item.id, -1)} style={styles.quantityButton}>
+                  <Text style={styles.quantityText}>-</Text>
+                </TouchableOpacity>
+                <Text style={styles.quantityValue}>{quantidades[item.id] || 1}</Text>
+                <TouchableOpacity onPress={() => alterarQuantidade(item.id, 1)} style={styles.quantityButton}>
+                  <Text style={styles.quantityText}>+</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity onPress={() => adicionarAoCarrinho(item.id)} style={styles.addToCartButton}>
+                <Text style={styles.addToCartText}>Adicionar ao Carrinho</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          nestedScrollEnabled
+        />
       </View>
-
-      {/* Novo botão para ir para a Screen3 */}
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Screen3")}>
-        <Text style={styles.buttonText}>Ir para a próxima etapa</Text>
-      </TouchableOpacity>
-    </ScrollView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: "#fff",
-  },
+  background: { flex: 1, justifyContent: "center", alignItems: "center" },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    marginBottom: 20,
-  },
-  welcomeContainer: {
-    flexDirection: "column",
-  },
-  welcomeText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#666",
-  },
-  profileContainer: {
-    alignItems: "center",
-    position: "relative",
-  },
-  profileImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-  },
-  logoutContainer: {
+    paddingBottom: 10,
     position: "absolute",
-    bottom: -20,
-    left: "50%",
-    transform: [{ translateX: -10 }],
+    top: 0,
+    paddingHorizontal: 10,
   },
-  logout: {
-    fontSize: 16,
-    color: "#1E90FF",
-    textDecorationLine: "underline",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  imageContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-  },
-  productImage: {
-    width: 150,
-    height: 150,
-    margin: 10,
-  },
-  button: {
-    marginTop: 20,
-    backgroundColor: "#1E90FF",
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
+  welcomeContainer: { flexDirection: "column" },
+  welcomeText: { fontSize: 18, fontWeight: "bold", color: "#006400" },
+  subtitle: { fontSize: 14, color: "#006400" },
+  profileContainer: { alignItems: "center", position: "relative", flexDirection: 'row'},
+  iconContainer: { marginRight: 10 },
+  profileImage: { width: 60, height: 60, borderRadius: 30 },
+  logoutContainer: { position: "absolute", bottom: -20, left: "50%", transform: [{ translateX: -10 }] },
+  logout: { fontSize: 16, color: "#006400", textDecorationLine: "underline" },
+  iconButton: { backgroundColor: "#006400", padding: 10, borderRadius: 30 },
+  iconText: { fontSize: 24, color: "#FFF" },
+  productsContainer: { marginTop: 100, padding: 10, width: "100%" },
+  title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginBottom: 20 },
+  productContainer: { marginBottom: 40, alignItems: "center" },
+  productName: { fontSize: 18, fontWeight: "bold" },
+  productPrice: { fontSize: 16, fontWeight: "bold", color: "#1E90FF", marginVertical: 5 },
+  imageSliderContainer: { flexDirection: "row", alignItems: "center" },
+  arrow: { fontSize: 30, color: "#006400", marginHorizontal: 10 },
+  productImage: { width: 200, height: 200, borderRadius: 10 },
+  quantityContainer: { flexDirection: "row", alignItems: "center", marginTop: 10 },
+  quantityButton: { padding: 10, backgroundColor: "#ccc", borderRadius: 5 },
+  quantityText: { fontSize: 18, fontWeight: "bold" },
+  quantityValue: { fontSize: 16, marginHorizontal: 10 },
+  addToCartButton: { backgroundColor: "#006400", padding: 10, marginTop: 15, borderRadius: 5 },
+  addToCartText: { color: "#FFF", fontSize: 16, fontWeight: "bold" }
 });
 
 export default Screen2;

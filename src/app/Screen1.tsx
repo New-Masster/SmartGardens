@@ -127,7 +127,7 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
                   style={styles.input}
                   placeholder="Endereço"
                   value={address}
-                  editable={false} // O campo de endereço é somente leitura
+                  editable={false} 
                 />
               </View>
             ) : (
@@ -230,6 +230,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 15,
+    color: "#006400",
   },
   inputContainer: {
     width: "100%",
