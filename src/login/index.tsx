@@ -112,12 +112,14 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "#006400",
   },
   subtitle: {
     fontSize: 16,
     marginBottom: 20,
     textAlign: "center",
-    color: "#333",
+    fontWeight: "bold",
+    color: "#006400",
   },
   inputContainer: {
     width: "100%",
@@ -140,7 +142,7 @@ const styles = StyleSheet.create({
     color: "#444", 
   },
   link: {
-    color: "#006400",
+    color: "#274200",
     fontWeight: "bold",
     marginTop: 15,
     textDecorationLine: "underline",

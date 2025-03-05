@@ -1,14 +1,13 @@
-// Screen3.tsx
-import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
-import { RouteProp } from "@react-navigation/native";
+import React, { useState, useEffect } from "react";
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ImageBackground } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from "@react-navigation/native";
+import { FontAwesome } from '@expo/vector-icons';
 
 type RootStackParamList = {
-  Screen2: { nome: string };
-  Screen3: { carrinho: any[] };  // Passando o carrinho como parâmetro
-  Login: undefined;
-  Screen4: { id: number; nome: string; imagens: string[]; preco: string; descricao: string };
+  Screen3: { carrinho: any[] };
+  Screen2: { carrinho: any[] };
+  Payment: undefined; // Faltaa rota de pagamento
 };
 
 type Screen3Props = {
@@ -16,40 +15,243 @@ type Screen3Props = {
   route: RouteProp<RootStackParamList, "Screen3">;
 };
 
-const Screen3: React.FC<Screen3Props> = ({ route }) => {
-  const carrinho = route.params?.carrinho ?? [];
+const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
+  const [carrinho, setCarrinho] = useState(route.params?.carrinho ?? []);
 
-  const calcularTotal = () => {
-    return carrinho.reduce((total, item) => total + parseFloat(item.preco.replace("R$", "").replace(",", ".")) * item.quantidade, 0);
+  useEffect(() => {
+    navigation.setParams({ carrinho });
+  }, [carrinho]);
+
+  const calcularTotal = (preco: string, quantidade: number) => {
+    const precoNumerico = parseFloat(preco.replace("R$", "").replace(",", "."));
+    return (precoNumerico * quantidade).toFixed(2).replace(".", ",");
+  };
+
+  const calcularTotalGeral = () => {
+    return carrinho.reduce((total, item) => {
+      const precoNumerico = parseFloat(item.preco.replace("R$", "").replace(",", "."));
+      return total + precoNumerico * item.quantidade;
+    }, 0).toFixed(2).replace(".", ",");
+  };
+
+  const alterarQuantidade = (id: number, incremento: number) => {
+    setCarrinho((prevCarrinho) =>
+      prevCarrinho.map((item) =>
+        item.id === id ? { ...item, quantidade: Math.max(1, item.quantidade + incremento) } : item
+      )
+    );
+  };
+
+  const removerDoCarrinho = (id: number) => {
+    setCarrinho((prevCarrinho) => prevCarrinho.filter((item) => item.id !== id));
+  };
+
+  const limparCarrinho = () => {
+    setCarrinho([]);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Carrinho de Compras</Text>
-      <FlatList
-        data={carrinho}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.itemContainer}>
-            <Text style={styles.itemName}>{item.nome}</Text>
-            <Text style={styles.itemPrice}>{item.preco}</Text>
-            <Text style={styles.itemQuantity}>Quantidade: {item.quantidade}</Text>
-          </View>
+    <ImageBackground source={require("../assets/Fundo_carrinho.png")} style={styles.background} imageStyle={{ opacity: 0.7 }}>
+      <View style={styles.container}>
+        <View style={styles.titleContainer}>
+          <FontAwesome name="shopping-cart" size={24} color="black" />
+          <Text style={styles.title}>Meu Carrinho</Text>
+        </View>
+        {carrinho.length > 0 ? (
+          <>
+            <FlatList
+              data={carrinho}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <View style={styles.productContainer}>
+                  <Image source={item.imagens[0]} style={styles.productImage} />
+                  <View style={styles.productDetails}>
+                    <Text style={styles.productName}>{item.nome}</Text>
+                    <Text style={styles.productPrice}>Preço Unitário: {item.preco}</Text>
+                    <View style={styles.quantityContainer}>
+                      <TouchableOpacity onPress={() => alterarQuantidade(item.id, -1)} style={styles.quantityButton}>
+                        <Text style={styles.quantityText}>-</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.quantityValue}>{item.quantidade}</Text>
+                      <TouchableOpacity onPress={() => alterarQuantidade(item.id, 1)} style={styles.quantityButton}>
+                        <Text style={styles.quantityText}>+</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <Text style={styles.productTotal}>Total Parcial: R$ {calcularTotal(item.preco, item.quantidade)}</Text>
+                  </View>
+                  <TouchableOpacity onPress={() => removerDoCarrinho(item.id)} style={styles.trashButton}>
+                    <FontAwesome name="trash" size={24} color="red" />
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
+            <View style={styles.totalContainer}>
+              <Text style={styles.totalText}>Total Geral: R$ {calcularTotalGeral()}</Text>
+            </View>
+            <TouchableOpacity style={styles.clearButton} onPress={limparCarrinho}>
+              <FontAwesome name="trash" size={24} color="white" />
+              <Text style={styles.clearButtonText}>Limpar Carrinho</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.paymentButton} onPress={() => navigation.navigate("Payment")}>
+              <FontAwesome name="credit-card" size={24} color="white" />
+              <Text style={styles.paymentButtonText}>Realizar Pagamento</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <Text style={styles.emptyCartText}>Seu carrinho está vazio.</Text>
         )}
-      />
-      <Text style={styles.total}>Total: R$ {calcularTotal().toFixed(2).replace(".", ",")}</Text>
-    </View>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Screen2", { carrinho })}>
+          <FontAwesome name="arrow-left" size={24} color="white" />
+          <Text style={styles.buttonText}>Voltar</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 10 },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
-  itemContainer: { marginBottom: 20, alignItems: "center" },
-  itemName: { fontSize: 18, fontWeight: "bold" },
-  itemPrice: { fontSize: 16, color: "#1E90FF" },
-  itemQuantity: { fontSize: 16, color: "#006400" },
-  total: { fontSize: 20, fontWeight: "bold", marginTop: 20 }
+  background: {
+    flex: 1,
+    justifyContent: "center",
+    width: "100%",
+    height: "100%",
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  productContainer: {
+    flexDirection: "row",
+    marginBottom: 20,
+    alignItems: "center",
+  },
+  productImage: {
+    width: 100,
+    height: 100,
+    marginRight: 20,
+  },
+  productDetails: {
+    flex: 1,
+  },
+  productName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#274200",
+    backgroundColor: "#ccc",
+    borderRadius: 5,
+  },
+  productPrice: {
+    fontSize: 16,
+    color: "#274200",
+    fontWeight: "bold",
+  },
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+    color: "#274200",
+    fontWeight: "bold",
+  },
+  quantityButton: {
+    padding: 8,
+    backgroundColor: "#ccc",
+    borderRadius: 8,
+  },
+  quantityText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#274200",
+  },
+  quantityValue: {
+    fontSize: 16,
+    marginHorizontal: 10,
+    color: "#274200",
+    fontWeight: "bold",
+  },
+  productTotal: {
+    fontSize: 16,
+    color: "#385309",
+    backgroundColor: "#6fdf90",
+    borderRadius: 5,
+    fontWeight: "bold",
+  },
+  trashButton: {
+    marginLeft: 10,
+    backgroundColor: "#ccc",
+    borderRadius: 5,
+  },
+  totalContainer: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+  totalText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#385309",
+    backgroundColor: "#6fdf90",
+    borderRadius: 5,
+  },
+  clearButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "red",
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  clearButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  emptyCartText: {
+    fontSize: 18,
+    textAlign: "center",
+    marginTop: 20,
+  },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    backgroundColor: "#1E90FF",
+    padding: 15,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  paymentButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    backgroundColor: "#32CD32",
+    padding: 15,
+    borderRadius: 10,
+  },
+  paymentButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
 });
 
 export default Screen3;

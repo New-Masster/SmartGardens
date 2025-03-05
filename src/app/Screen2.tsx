@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, FlatList } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
-import { Button } from 'react-native-elements'; // Certifique-se de importar Button corretamente
+import { Button } from 'react-native-elements';
 
 type RootStackParamList = {
-  Screen2: { nome: string };
-  Screen3: undefined;
+  Screen2: { nome: string, carrinho?: any[] };
+  Screen3: { carrinho: any[] };
   Login: undefined;
   Screen4: { id: number; nome: string; imagens: string[]; preco: string; descricao: string };
 };
@@ -20,6 +20,13 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
   const nome = route.params?.nome ?? "Usuário";
   const [selectedImageIndexes, setSelectedImageIndexes] = useState<{ [key: number]: number }>({});
   const [quantidades, setQuantidades] = useState<{ [key: number]: number }>({});
+  const [carrinho, setCarrinho] = useState<any[]>(route.params?.carrinho ?? []);
+
+  useEffect(() => {
+    if (route.params?.carrinho) {
+      setCarrinho(route.params.carrinho);
+    }
+  }, [route.params?.carrinho]);
 
   const produtos = [
     { id: 1, nome: "Bancada Hidropônica", imagens: [require("../assets/Bancada Hidropônica 0.png"), require("../assets/Bancada Hidropônica 1.png"), require("../assets/Bancada Hidropônica 2.png")], preco: "R$ 687,00", descricao: "Uma linda planta suculenta para decorar seu espaço." },
@@ -42,7 +49,21 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
   };
 
   const adicionarAoCarrinho = (produtoId: number) => {
-    console.log(`Produto ${produtoId} adicionado ao carrinho!`);
+    const produto = produtos.find(p => p.id === produtoId);
+    if (produto) {
+      setCarrinho((prevCarrinho) => {
+        const itemExistente = prevCarrinho.find(item => item.id === produtoId);
+        if (itemExistente) {
+          return prevCarrinho.map(item =>
+            item.id === produtoId
+              ? { ...item, quantidade: item.quantidade + (quantidades[produtoId] || 1) }
+              : item
+          );
+        } else {
+          return [...prevCarrinho, { ...produto, quantidade: quantidades[produtoId] || 1 }];
+        }
+      });
+    }
   };
 
   return (
@@ -56,7 +77,7 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
         {/* Container do perfil e carrinho */}
         <View style={styles.profileContainer}>
           <View style={styles.iconContainer}>
-            <Button icon={{ name: 'shopping-cart', color: '#FFF' }} buttonStyle={styles.iconButton} onPress={() => navigation.navigate("Screen3")} />
+            <Button icon={{ name: 'shopping-cart', color: '#FFF' }} buttonStyle={styles.iconButton} onPress={() => navigation.navigate("Screen3", { carrinho })} />
           </View>
           <Image source={require("../assets/Usuario.png")} style={styles.profileImage} />
           <TouchableOpacity onPress={() => navigation.navigate("Login")} style={styles.logoutContainer}>
@@ -129,14 +150,14 @@ const styles = StyleSheet.create({
   productsContainer: { marginTop: 100, padding: 10, width: "100%" },
   title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginBottom: 20 },
   productContainer: { marginBottom: 40, alignItems: "center" },
-  productName: { fontSize: 18, fontWeight: "bold" },
-  productPrice: { fontSize: 16, fontWeight: "bold", color: "#1E90FF", marginVertical: 5 },
+  productName: { fontSize: 18, fontWeight: "bold", color: "#274200" },
+  productPrice: { fontSize: 16, fontWeight: "bold", color: "#93f43d", marginVertical: 5 },
   imageSliderContainer: { flexDirection: "row", alignItems: "center" },
-  arrow: { fontSize: 30, color: "#006400", marginHorizontal: 10 },
+  arrow: { fontSize: 30, color: "#274200", marginHorizontal: 10 },
   productImage: { width: 200, height: 200, borderRadius: 10 },
   quantityContainer: { flexDirection: "row", alignItems: "center", marginTop: 10 },
   quantityButton: { padding: 10, backgroundColor: "#ccc", borderRadius: 5 },
-  quantityText: { fontSize: 18, fontWeight: "bold" },
+  quantityText: { fontSize: 18, fontWeight: "bold", color: "#274200" },
   quantityValue: { fontSize: 16, marginHorizontal: 10 },
   addToCartButton: { backgroundColor: "#006400", padding: 10, marginTop: 15, borderRadius: 5 },
   addToCartText: { color: "#FFF", fontSize: 16, fontWeight: "bold" }
