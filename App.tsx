@@ -21,7 +21,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 const App: React.FC = () => {
   return (
-    <UserProvider> {/* Envolvendo o aplicativo com o UserProvider */}
+    <UserProvider> 
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
