@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
+import { useUser } from "../context/UserContext"; // Importando o contexto
 
 type RootStackParamList = {
   Screen4: { id: number; nome: string; imagens: any[]; preco: string; descricao: string };
+  Screen3: { carrinho: any[] };
 };
 
 type Screen4Props = {
@@ -15,6 +17,7 @@ type Screen4Props = {
 const Screen4: React.FC<Screen4Props> = ({ navigation, route }) => {
   const { nome, imagens, preco, descricao } = route.params;
   const [imagemIndex, setImagemIndex] = useState(0);
+  const { userInfo } = useUser(); // Acessando informações do usuário pelo contexto
 
   const handleNextImage = () => {
     setImagemIndex((prevIndex) => (prevIndex + 1) % imagens.length);
@@ -22,6 +25,13 @@ const Screen4: React.FC<Screen4Props> = ({ navigation, route }) => {
 
   const handlePrevImage = () => {
     setImagemIndex((prevIndex) => (prevIndex - 1 + imagens.length) % imagens.length);
+  };
+
+  const handleAddToCart = () => {
+    Alert.alert("Sucesso", "Produto adicionado ao carrinho!");
+    navigation.navigate("Screen3", {
+      carrinho: [{ id: route.params.id, nome, preco, quantidade: 1 }],
+    }); // Navegação para Screen3 ao adicionar o produto ao carrinho
   };
 
   return (
@@ -39,7 +49,10 @@ const Screen4: React.FC<Screen4Props> = ({ navigation, route }) => {
       <Text style={styles.productPrice}>{preco}</Text>
       <Text style={styles.productDescription}>{descricao}</Text>
 
-      <TouchableOpacity style={styles.button} onPress={() => alert("Produto adicionado ao carrinho!")}>
+      {/* Exibindo o nome do usuário */}
+      <Text style={styles.userName}>Olá, {userInfo.name || "Usuário"}!</Text>
+
+      <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
         <Text style={styles.buttonText}>Adicionar ao Carrinho</Text>
       </TouchableOpacity>
 
@@ -86,6 +99,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     marginBottom: 20,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#006400",
   },
   button: {
     backgroundColor: "#1E90FF",

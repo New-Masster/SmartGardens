@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ImageBackground } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from "@expo/vector-icons";
+import { useUser } from "../context/UserContext"; // Importando o contexto
 
 type RootStackParamList = {
   Screen3: { carrinho: any[] };
   Screen2: { carrinho: any[] };
-  Payment: undefined; // Faltaa rota de pagamento
+  Payment: undefined; // Falta inserir a rota de pagamento
 };
 
 type Screen3Props = {
@@ -16,6 +17,7 @@ type Screen3Props = {
 };
 
 const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
+  const { userInfo } = useUser(); // Acessando informações do usuário pelo contexto
   const [carrinho, setCarrinho] = useState(route.params?.carrinho ?? []);
 
   useEffect(() => {
@@ -28,10 +30,13 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
   };
 
   const calcularTotalGeral = () => {
-    return carrinho.reduce((total, item) => {
-      const precoNumerico = parseFloat(item.preco.replace("R$", "").replace(",", "."));
-      return total + precoNumerico * item.quantidade;
-    }, 0).toFixed(2).replace(".", ",");
+    return carrinho
+      .reduce((total, item) => {
+        const precoNumerico = parseFloat(item.preco.replace("R$", "").replace(",", "."));
+        return total + precoNumerico * item.quantidade;
+      }, 0)
+      .toFixed(2)
+      .replace(".", ",");
   };
 
   const alterarQuantidade = (id: number, incremento: number) => {
@@ -51,12 +56,20 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
   };
 
   return (
-    <ImageBackground source={require("../assets/Fundo_carrinho.png")} style={styles.background} imageStyle={{ opacity: 0.7 }}>
+    <ImageBackground
+      source={require("../assets/Fundo_carrinho.png")}
+      style={styles.background}
+      imageStyle={{ opacity: 0.7 }}
+    >
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <FontAwesome name="shopping-cart" size={24} color="black" />
           <Text style={styles.title}>Meu Carrinho</Text>
         </View>
+
+        {/* Exibindo o nome do usuário */}
+        <Text style={styles.userName}>Olá, {userInfo.name || "Usuário"}!</Text>
+
         {carrinho.length > 0 ? (
           <>
             <FlatList
@@ -69,17 +82,28 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
                     <Text style={styles.productName}>{item.nome}</Text>
                     <Text style={styles.productPrice}>Preço Unitário: {item.preco}</Text>
                     <View style={styles.quantityContainer}>
-                      <TouchableOpacity onPress={() => alterarQuantidade(item.id, -1)} style={styles.quantityButton}>
+                      <TouchableOpacity
+                        onPress={() => alterarQuantidade(item.id, -1)}
+                        style={styles.quantityButton}
+                      >
                         <Text style={styles.quantityText}>-</Text>
                       </TouchableOpacity>
                       <Text style={styles.quantityValue}>{item.quantidade}</Text>
-                      <TouchableOpacity onPress={() => alterarQuantidade(item.id, 1)} style={styles.quantityButton}>
+                      <TouchableOpacity
+                        onPress={() => alterarQuantidade(item.id, 1)}
+                        style={styles.quantityButton}
+                      >
                         <Text style={styles.quantityText}>+</Text>
                       </TouchableOpacity>
                     </View>
-                    <Text style={styles.productTotal}>Total Parcial: R$ {calcularTotal(item.preco, item.quantidade)}</Text>
+                    <Text style={styles.productTotal}>
+                      Total Parcial: R$ {calcularTotal(item.preco, item.quantidade)}
+                    </Text>
                   </View>
-                  <TouchableOpacity onPress={() => removerDoCarrinho(item.id)} style={styles.trashButton}>
+                  <TouchableOpacity
+                    onPress={() => removerDoCarrinho(item.id)}
+                    style={styles.trashButton}
+                  >
                     <FontAwesome name="trash" size={24} color="red" />
                   </TouchableOpacity>
                 </View>
@@ -92,7 +116,10 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
               <FontAwesome name="trash" size={24} color="white" />
               <Text style={styles.clearButtonText}>Limpar Carrinho</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.paymentButton} onPress={() => navigation.navigate("Payment")}>
+            <TouchableOpacity
+              style={styles.paymentButton}
+              onPress={() => navigation.navigate("Payment")} // Falta inserir a rota de pagamento
+            >
               <FontAwesome name="credit-card" size={24} color="white" />
               <Text style={styles.paymentButtonText}>Realizar Pagamento</Text>
             </TouchableOpacity>
@@ -100,7 +127,10 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
         ) : (
           <Text style={styles.emptyCartText}>Seu carrinho está vazio.</Text>
         )}
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Screen2", { carrinho })}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("Screen2", { carrinho })} // Navegação para Screen2 com o estado atualizado do carrinho
+        >
           <FontAwesome name="arrow-left" size={24} color="white" />
           <Text style={styles.buttonText}>Voltar</Text>
         </TouchableOpacity>
@@ -130,6 +160,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginLeft: 10,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#006400",
   },
   productContainer: {
     flexDirection: "row",
