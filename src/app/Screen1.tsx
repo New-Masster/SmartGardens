@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, Image, Alert } from "react-native";
-import * as ImagePicker from "expo-image-picker"; // Importando o Image Picker para capturar foto
+import * as ImagePicker from "expo-image-picker"; // Importa o Image Picker para capturar foto
 import { useUser } from "../context/UserContext"; // Importando o contexto
 
 const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
@@ -19,7 +19,7 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [state, setState] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
-  const [photo, setPhoto] = useState<string | null>(null); // Estado para armazenar a foto do usuário
+  const [photo, setPhoto] = useState<string | null>(null); // Armazena a foto do usuário
 
   const validateForm = () => {
     const errors: { [key: string]: string } = {};
@@ -84,7 +84,7 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
     }
   };
 
-  // Função para abrir a câmera e capturar uma foto
+  // Função para abrir a câmera e capturar a foto
   const handleTakePhoto = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
@@ -118,7 +118,7 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
           <View style={styles.innerContainer}>
             <Text style={styles.title}>Cadastro</Text>
 
-            {/* Área para exibir a foto */}
+            
             <TouchableOpacity onPress={handleTakePhoto} style={styles.photoContainer}>
               {photo ? (
                 <Image source={{ uri: photo }} style={styles.photo} />

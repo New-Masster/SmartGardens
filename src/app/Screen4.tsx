@@ -49,7 +49,7 @@ const Screen4: React.FC<Screen4Props> = ({ navigation, route }) => {
       <Text style={styles.productPrice}>{preco}</Text>
       <Text style={styles.productDescription}>{descricao}</Text>
 
-      {/* Exibindo o nome do usuário */}
+      
       <Text style={styles.userName}>Olá, {userInfo.name || "Usuário"}!</Text>
 
       <TouchableOpacity style={styles.button} onPress={handleAddToCart}>

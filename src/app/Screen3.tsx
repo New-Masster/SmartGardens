@@ -67,7 +67,7 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
           <Text style={styles.title}>Meu Carrinho</Text>
         </View>
 
-        {/* Exibindo o nome do usuário */}
+        
         <Text style={styles.userName}>Olá, {userInfo.name || "Usuário"}!</Text>
 
         {carrinho.length > 0 ? (

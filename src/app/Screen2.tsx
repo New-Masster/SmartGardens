@@ -18,7 +18,7 @@ type Screen2Props = {
 };
 
 const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
-  const { userInfo, clearUserInfo } = useUser(); // Usando o contexto para acessar as informações do usuário
+  const { userInfo, clearUserInfo } = useUser(); // Usa o contexto para acessar as informações do usuário
   const nome = userInfo.name || "Usuário"; // Nome do usuário vindo do contexto
   const userPhoto = userInfo.photo; // Foto do usuário vinda do contexto
   const [selectedImageIndexes, setSelectedImageIndexes] = useState<{ [key: number]: number }>({});
