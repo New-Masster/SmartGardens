@@ -7,53 +7,53 @@ import { useUser } from "../context/UserContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type RootStackParamList = {
-  Screen3: { carrinho: any[] };
-  Screen2: { carrinho: any[] };
+  Cart: { cart: any[] };
+  Home: { cart: any[] };
   Payment: undefined;
 };
 
-type Screen3Props = {
-  navigation: StackNavigationProp<RootStackParamList, "Screen3">;
-  route: RouteProp<RootStackParamList, "Screen3">;
+type CartScreenProps = {
+  navigation: StackNavigationProp<RootStackParamList, "Cart">;
+  route: RouteProp<RootStackParamList, "Cart">;
 };
 
-const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
+const CartScreen: React.FC<CartScreenProps> = ({ navigation, route }) => {
   const { userInfo } = useUser();
-  const [carrinho, setCarrinho] = useState(route.params?.carrinho ?? []);
+  const [cart, setCart] = useState(route.params?.cart ?? []);
 
   useEffect(() => {
-    navigation.setParams({ carrinho });
-  }, [carrinho]);
+    navigation.setParams({ cart });
+  }, [cart]);
 
-  const calcularTotal = (preco: string, quantidade: number) => {
-    const precoNumerico = parseFloat(preco.replace("R$", "").replace(",", "."));
-    return (precoNumerico * quantidade).toFixed(2).replace(".", ",");
+  const calculateTotal = (price: string, quantity: number) => {
+    const numericPrice = parseFloat(price.replace("R$", "").replace(",", "."));
+    return (numericPrice * quantity).toFixed(2).replace(".", ",");
   };
 
-  const calcularTotalGeral = () => {
-    return carrinho
+  const calculateGrandTotal = () => {
+    return cart
       .reduce((total, item) => {
-        const precoNumerico = parseFloat(item.preco.replace("R$", "").replace(",", "."));
-        return total + precoNumerico * item.quantidade;
+        const numericPrice = parseFloat(item.preco.replace("R$", "").replace(",", "."));
+        return total + numericPrice * item.quantidade;
       }, 0)
       .toFixed(2)
       .replace(".", ",");
   };
 
-  const alterarQuantidade = (id: number, incremento: number) => {
-    setCarrinho((prevCarrinho) =>
-      prevCarrinho.map((item) =>
-        item.id === id ? { ...item, quantidade: Math.max(1, item.quantidade + incremento) } : item
+  const changeQuantity = (id: number, increment: number) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id ? { ...item, quantidade: Math.max(1, item.quantidade + increment) } : item
       )
     );
   };
 
-  const removerDoCarrinho = (id: number) => {
-    setCarrinho((prevCarrinho) => prevCarrinho.filter((item) => item.id !== id));
+  const removeFromCart = (id: number) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
-  const limparCarrinho = () => {
-    setCarrinho([]);
+  const clearCart = () => {
+    setCart([]);
   };
 
   return (
@@ -67,35 +67,35 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
 
           <Text style={styles.userName}>Olá, {userInfo.name || "Usuário"}!</Text>
 
-          {carrinho.length > 0 ? (
+          {cart.length > 0 ? (
             <>
-              {carrinho.map((item) => (
+              {cart.map((item) => (
                 <View style={styles.productContainer} key={item.id}>
                   <Image source={item.imagens[0]} style={styles.productImage} />
                   <View style={styles.productDetails}>
                     <Text style={styles.productName}>{item.nome}</Text>
-                    <Text style={styles.productPrice}>Preço Unitário: {item.preco}</Text>
+                    <Text style={styles.productPrice}>Preço unitário: {item.preco}</Text>
                     <View style={styles.quantityContainer}>
                       <TouchableOpacity
-                        onPress={() => alterarQuantidade(item.id, -1)}
+                        onPress={() => changeQuantity(item.id, -1)}
                         style={styles.quantityButton}
                       >
                         <Text style={styles.quantityText}>-</Text>
                       </TouchableOpacity>
                       <Text style={styles.quantityValue}>{item.quantidade}</Text>
                       <TouchableOpacity
-                        onPress={() => alterarQuantidade(item.id, 1)}
+                        onPress={() => changeQuantity(item.id, 1)}
                         style={styles.quantityButton}
                       >
                         <Text style={styles.quantityText}>+</Text>
                       </TouchableOpacity>
                     </View>
                     <Text style={styles.productTotal}>
-                      Total Parcial: R$ {calcularTotal(item.preco, item.quantidade)}
+                      Subtotal: R$ {calculateTotal(item.preco, item.quantidade)}
                     </Text>
                   </View>
                   <TouchableOpacity
-                    onPress={() => removerDoCarrinho(item.id)}
+                    onPress={() => removeFromCart(item.id)}
                     style={styles.trashButton}
                   >
                     <FontAwesome name="trash" size={24} color="red" />
@@ -103,18 +103,18 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
                 </View>
               ))}
               <View style={styles.totalContainer}>
-                <Text style={styles.totalText}>Total Geral: R$ {calcularTotalGeral()}</Text>
+                <Text style={styles.totalText}>Total: R$ {calculateGrandTotal()}</Text>
               </View>
-              <TouchableOpacity style={styles.clearButton} onPress={limparCarrinho}>
+              <TouchableOpacity style={styles.clearButton} onPress={clearCart}>
                 <FontAwesome name="trash" size={24} color="white" />
-                <Text style={styles.clearButtonText}>Limpar Carrinho</Text>
+                <Text style={styles.clearButtonText}>Esvaziar Carrinho</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.paymentButton}
                 onPress={() => navigation.navigate("Payment")}
               >
                 <FontAwesome name="credit-card" size={24} color="white" />
-                <Text style={styles.paymentButtonText}>Realizar Pagamento</Text>
+                <Text style={styles.paymentButtonText}>Finalizar Compra</Text>
               </TouchableOpacity>
             </>
           ) : (
@@ -122,7 +122,7 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
           )}
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate("Screen2", { carrinho })}
+            onPress={() => navigation.navigate("Home", { cart })}
           >
             <FontAwesome name="arrow-left" size={24} color="white" />
             <Text style={styles.buttonText}>Voltar</Text>
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     justifyContent: "flex-start",
-    paddingBottom: 30, // Garante espaço extra no final
+    paddingBottom: 30,
   },
   container: {
     flex: 1,
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E90FF",
     padding: 15,
     borderRadius: 10,
-    marginBottom: 30, // Espaço extra para não ficar sobre os botões do sistema
+    marginBottom: 30,
   },
   buttonText: {
     color: "#fff",
@@ -291,4 +291,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Screen3;
+export default CartScreen;

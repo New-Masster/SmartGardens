@@ -2,36 +2,36 @@ import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
-import { useUser } from "../context/UserContext"; // Importando o contexto
+import { useUser } from "../context/UserContext";
 
 type RootStackParamList = {
-  Screen4: { id: number; nome: string; imagens: any[]; preco: string; descricao: string };
-  Screen3: { carrinho: any[] };
+  ProductDetail: { id: number; name: string; images: any[]; price: string; description: string };
+  Cart: { cart: any[] };
 };
 
-type Screen4Props = {
-  navigation: StackNavigationProp<RootStackParamList, "Screen4">;
-  route: RouteProp<RootStackParamList, "Screen4">;
+type ProductDetailScreenProps = {
+  navigation: StackNavigationProp<RootStackParamList, "ProductDetail">;
+  route: RouteProp<RootStackParamList, "ProductDetail">;
 };
 
-const Screen4: React.FC<Screen4Props> = ({ navigation, route }) => {
-  const { nome, imagens, preco, descricao } = route.params;
-  const [imagemIndex, setImagemIndex] = useState(0);
-  const { userInfo } = useUser(); // Acessando informações do usuário pelo contexto
+const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({ navigation, route }) => {
+  const { name, images, price, description, id } = route.params;
+  const [imageIndex, setImageIndex] = useState(0);
+  const { userInfo } = useUser();
 
   const handleNextImage = () => {
-    setImagemIndex((prevIndex) => (prevIndex + 1) % imagens.length);
+    setImageIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
   const handlePrevImage = () => {
-    setImagemIndex((prevIndex) => (prevIndex - 1 + imagens.length) % imagens.length);
+    setImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
   };
 
   const handleAddToCart = () => {
     Alert.alert("Sucesso", "Produto adicionado ao carrinho!");
-    navigation.navigate("Screen3", {
-      carrinho: [{ id: route.params.id, nome, preco, quantidade: 1 }],
-    }); // Navegação para Screen3 ao adicionar o produto ao carrinho
+    navigation.navigate("Cart", {
+      cart: [{ id, name, price, quantity: 1, images, description }],
+    });
   };
 
   return (
@@ -40,16 +40,15 @@ const Screen4: React.FC<Screen4Props> = ({ navigation, route }) => {
         <TouchableOpacity onPress={handlePrevImage}>
           <Text style={styles.arrow}>{"<"}</Text>
         </TouchableOpacity>
-        <Image source={imagens[imagemIndex]} style={styles.productImage} />
+        <Image source={images[imageIndex]} style={styles.productImage} />
         <TouchableOpacity onPress={handleNextImage}>
           <Text style={styles.arrow}>{">"}</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.productName}>{nome}</Text>
-      <Text style={styles.productPrice}>{preco}</Text>
-      <Text style={styles.productDescription}>{descricao}</Text>
+      <Text style={styles.productName}>{name}</Text>
+      <Text style={styles.productPrice}>{price}</Text>
+      <Text style={styles.productDescription}>{description}</Text>
 
-      
       <Text style={styles.userName}>Olá, {userInfo.name || "Usuário"}!</Text>
 
       <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
@@ -129,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Screen4;
+export default ProductDetailScreen;

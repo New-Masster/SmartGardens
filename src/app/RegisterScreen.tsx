@@ -4,7 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useUser } from "../context/UserContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
+const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const { setUserInfo } = useUser();
 
   const [name, setName] = useState<string>("");
@@ -34,7 +34,7 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
     if (!number) errors.number = "Número é obrigatório";
     if (!address && !street) errors.address = "Endereço é obrigatório";
     if (!password) errors.password = "Senha é obrigatória";
-    if (!confirmPassword) errors.confirmPassword = "Confirme a senha";
+    if (!confirmPassword) errors.confirmPassword = "Confirme sua senha";
     if (password && confirmPassword && password !== confirmPassword) {
       errors.confirmPassword = "As senhas não coincidem";
     }
@@ -61,10 +61,9 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
       city,
       state,
       photo,
-      password,
     });
 
-    navigation.navigate("Screen2");
+    navigation.navigate("Home");
   };
 
   const handleCepChange = async (cepInput: string) => {
@@ -81,7 +80,7 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
           setState(data.uf);
           setErrorMessage("");
         } else {
-          setErrorMessage("CEP não encontrado. Por favor, insira os dados manualmente.");
+          setErrorMessage("CEP não encontrado. Preencha os dados manualmente.");
           setAddress("");
         }
       } catch (error) {
@@ -154,7 +153,7 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
               <Text style={styles.label}>E-mail</Text>
               <TextInput
                 style={styles.input}
-                placeholder="exemplo@exemplo.com"
+                placeholder="exemplo@email.com"
                 keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
@@ -175,7 +174,7 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Confirmar Senha</Text>
+              <Text style={styles.label}>Confirme a Senha</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Confirme sua senha"
@@ -204,7 +203,7 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
               <Text style={styles.label}>CEP</Text>
               <TextInput
                 style={styles.input}
-                placeholder="57000-00"
+                placeholder="57000-000"
                 keyboardType="numeric"
                 value={cep}
                 onChangeText={handleCepChange}
@@ -279,7 +278,7 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
               <Text style={styles.label}>Número</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Número da residência"
+                placeholder="Número da casa"
                 keyboardType="numeric"
                 value={number}
                 onChangeText={setNumber}
@@ -290,7 +289,7 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
             <Button title="Cadastrar" onPress={handleRegister} />
 
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <Text style={styles.link}>Já tem uma conta? Faça login</Text>
+              <Text style={styles.link}>Já tem uma conta? Entrar</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -375,4 +374,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Screen1;
+export default RegisterScreen;

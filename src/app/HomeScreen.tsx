@@ -7,64 +7,64 @@ import { useUser } from "../context/UserContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type RootStackParamList = {
-  Screen2: { nome: string; carrinho?: any[] };
-  Screen3: { carrinho: any[] };
+  Home: { name: string; cart?: any[] };
+  Cart: { cart: any[] };
   Login: undefined;
-  Screen4: { id: number; nome: string; imagens: string[]; preco: string; descricao: string };
+  ProductDetail: { id: number; name: string; images: string[]; price: string; description: string };
 };
 
-type Screen2Props = {
-  navigation: StackNavigationProp<RootStackParamList, "Screen2">;
-  route: RouteProp<RootStackParamList, "Screen2">;
+type HomeScreenProps = {
+  navigation: StackNavigationProp<RootStackParamList, "Home">;
+  route: RouteProp<RootStackParamList, "Home">;
 };
 
-const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const { userInfo, clearUserInfo } = useUser();
-  const nome = userInfo.name || "Usuário";
+  const name = userInfo.name || "Usuário";
   const userPhoto = userInfo.photo;
   const [selectedImageIndexes, setSelectedImageIndexes] = useState<{ [key: number]: number }>({});
-  const [quantidades, setQuantidades] = useState<{ [key: number]: number }>({});
-  const [carrinho, setCarrinho] = useState<any[]>(route.params?.carrinho ?? []);
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+  const [cart, setCart] = useState<any[]>(route.params?.cart ?? []);
 
   useEffect(() => {
-    if (route.params?.carrinho) {
-      setCarrinho(route.params.carrinho);
+    if (route.params?.cart) {
+      setCart(route.params.cart);
     }
-  }, [route.params?.carrinho]);
+  }, [route.params?.cart]);
 
-  const produtos = [
+  const products = [
     {
       id: 1,
-      nome: "Bancada Hidropônica",
-      imagens: [
+      name: "Bancada Hidropônica",
+      images: [
         require("../assets/Bancada Hidropônica 0.png"),
         require("../assets/Bancada Hidropônica 1.png"),
         require("../assets/Bancada Hidropônica 2.png"),
       ],
-      preco: "R$ 687,00",
-      descricao: "Uma linda planta suculenta para decorar seu espaço.",
+      price: "R$ 687,00",
+      description: "Uma linda bancada hidropônica para decorar seu espaço.",
     },
     {
       id: 2,
-      nome: "Caixa Hidropônica",
-      imagens: [
+      name: "Caixa Hidropônica",
+      images: [
         require("../assets/Caixa Hidropônica 0.png"),
         require("../assets/Caixa Hidropônica 1.png"),
         require("../assets/Caixa Hidropônica 2.png"),
       ],
-      preco: "R$ 302,99",
-      descricao: "Ideal para purificar o ar e decorar ambientes internos.",
+      price: "R$ 302,99",
+      description: "Ideal para purificar o ar e decorar ambientes internos.",
     },
     {
       id: 3,
-      nome: "Horta Hidropônica",
-      imagens: [
+      name: "Horta Hidropônica",
+      images: [
         require("../assets/Horta Hidropônica 0.png"),
         require("../assets/Horta Hidropônica 1.png"),
         require("../assets/Horta Hidropônica 2.png"),
       ],
-      preco: "R$ 59,90",
-      descricao: "Orquídea elegante para dar um toque especial à decoração.",
+      price: "R$ 59,90",
+      description: "Horta elegante para dar um toque especial à sua decoração.",
     },
   ];
 
@@ -75,26 +75,36 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
     }));
   };
 
-  const alterarQuantidade = (id: number, incremento: number) => {
-    setQuantidades((prev) => ({
+  const changeQuantity = (id: number, increment: number) => {
+    setQuantities((prev) => ({
       ...prev,
-      [id]: Math.max(1, (prev[id] || 1) + incremento),
+      [id]: Math.max(1, (prev[id] || 1) + increment),
     }));
   };
 
-  const adicionarAoCarrinho = (produtoId: number) => {
-    const produto = produtos.find((p) => p.id === produtoId);
-    if (produto) {
-      setCarrinho((prevCarrinho) => {
-        const itemExistente = prevCarrinho.find((item) => item.id === produtoId);
-        if (itemExistente) {
-          return prevCarrinho.map((item) =>
-            item.id === produtoId
-              ? { ...item, quantidade: item.quantidade + (quantidades[produtoId] || 1) }
+  const addToCart = (productId: number) => {
+    const product = products.find((p) => p.id === productId);
+    if (product) {
+      setCart((prevCart) => {
+        const existingItem = prevCart.find((item) => item.id === productId);
+        if (existingItem) {
+          return prevCart.map((item) =>
+            item.id === productId
+              ? { ...item, quantidade: item.quantidade + (quantities[productId] || 1) }
               : item
           );
         } else {
-          return [...prevCarrinho, { ...produto, quantidade: quantidades[produtoId] || 1 }];
+          return [
+            ...prevCart,
+            {
+              ...product,
+              quantidade: quantities[productId] || 1,
+              nome: product.name,
+              preco: product.price,
+              imagens: product.images,
+              descricao: product.description,
+            },
+          ];
         }
       });
     }
@@ -109,8 +119,8 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
     <SafeAreaView style={styles.background}>
       <View style={styles.header}>
         <View style={styles.welcomeContainer}>
-          <Text style={styles.welcomeText}>Olá, {nome}!</Text>
-          <Text style={styles.subtitle}>Seja bem-vindo(a)!</Text>
+          <Text style={styles.welcomeText}>Olá, {name}!</Text>
+          <Text style={styles.subtitle}>Bem-vindo!</Text>
         </View>
 
         <View style={styles.profileContainer}>
@@ -118,7 +128,7 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
             <Button
               icon={{ name: "shopping-cart", color: "#FFF" }}
               buttonStyle={styles.iconButton}
-              onPress={() => navigation.navigate("Screen3", { carrinho })}
+              onPress={() => navigation.navigate("Cart", { cart })}
             />
           </View>
           <TouchableOpacity>
@@ -137,27 +147,27 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
       <View style={styles.productsContainer}>
         <Text style={styles.title}>Produtos</Text>
         <FlatList
-          data={produtos}
+          data={products}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={styles.productContainer}>
-              <Text style={styles.productName}>{item.nome}</Text>
-              <Text style={styles.productPrice}>{item.preco}</Text>
+              <Text style={styles.productName}>{item.name}</Text>
+              <Text style={styles.productPrice}>{item.price}</Text>
               <View style={styles.imageSliderContainer}>
                 <TouchableOpacity
                   onPress={() =>
-                    handleImageChange(item.id, (selectedImageIndexes[item.id] || 0) - 1, item.imagens)
+                    handleImageChange(item.id, (selectedImageIndexes[item.id] || 0) - 1, item.images)
                   }
                 >
                   <Text style={styles.arrow}>{"<"}</Text>
                 </TouchableOpacity>
                 <Image
-                  source={item.imagens[selectedImageIndexes[item.id] || 0]}
+                  source={item.images[selectedImageIndexes[item.id] || 0]}
                   style={styles.productImage}
                 />
                 <TouchableOpacity
                   onPress={() =>
-                    handleImageChange(item.id, (selectedImageIndexes[item.id] || 0) + 1, item.imagens)
+                    handleImageChange(item.id, (selectedImageIndexes[item.id] || 0) + 1, item.images)
                   }
                 >
                   <Text style={styles.arrow}>{">"}</Text>
@@ -165,21 +175,21 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
               </View>
               <View style={styles.quantityContainer}>
                 <TouchableOpacity
-                  onPress={() => alterarQuantidade(item.id, -1)}
+                  onPress={() => changeQuantity(item.id, -1)}
                   style={styles.quantityButton}
                 >
                   <Text style={styles.quantityText}>-</Text>
                 </TouchableOpacity>
-                <Text style={styles.quantityValue}>{quantidades[item.id] || 1}</Text>
+                <Text style={styles.quantityValue}>{quantities[item.id] || 1}</Text>
                 <TouchableOpacity
-                  onPress={() => alterarQuantidade(item.id, 1)}
+                  onPress={() => changeQuantity(item.id, 1)}
                   style={styles.quantityButton}
                 >
                   <Text style={styles.quantityText}>+</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
-                onPress={() => adicionarAoCarrinho(item.id)}
+                onPress={() => addToCart(item.id)}
                 style={styles.addToCartButton}
               >
                 <Text style={styles.addToCartText}>Adicionar ao Carrinho</Text>
@@ -187,7 +197,7 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
             </View>
           )}
           nestedScrollEnabled
-          contentContainerStyle={{ paddingBottom: 40 }} // Garante espaço extra no final
+          contentContainerStyle={{ paddingBottom: 40 }}
         />
       </View>
     </SafeAreaView>
@@ -231,4 +241,4 @@ const styles = StyleSheet.create({
   addToCartText: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
 });
 
-export default Screen2;
+export default HomeScreen;

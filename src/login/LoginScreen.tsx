@@ -8,11 +8,11 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   const handleSend = () => {
     if (contact.includes("@")) {
-      Alert.alert("Email enviado", "Verifique sua caixa de entrada.");
+      Alert.alert("E-mail enviado", "Verifique sua caixa de entrada.");
     } else if (/^\d+$/.test(contact)) {
       Alert.alert("SMS enviado", "Verifique suas mensagens.");
     } else {
-      Alert.alert("Erro", "Insira um e-mail ou telefone válido.");
+      Alert.alert("Erro", "Digite um e-mail ou telefone válido.");
     }
     setForgotPasswordVisible(false);
     setContact("");
@@ -22,7 +22,7 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     <View style={styles.container}>
       <Image source={require("../assets/Logo.png")} style={styles.logo} />
       <Text style={styles.title}>Bem-vindo</Text>
-      <Text style={styles.subtitle}>Insira os dados de SmartGardens para continuar</Text>
+      <Text style={styles.subtitle}>Digite suas credenciais SmartGardens para continuar</Text>
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>E-mail</Text>
@@ -46,9 +46,9 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         />
       </View>
 
-      <Button title="Entrar" onPress={() => navigation.navigate("Screen2", { email })} />
+      <Button title="Entrar" onPress={() => navigation.navigate("Home", { email })} />
 
-      <TouchableOpacity onPress={() => navigation.navigate("Screen1")}>
+      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
         <Text style={styles.link}>Não tem uma conta? Cadastre-se aqui</Text>
       </TouchableOpacity>
 

@@ -5,7 +5,7 @@
     "strict": true,
     "noImplicitAny": true,
     "skipLibCheck": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node", // Mantém "node" (não use customConditions)
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
