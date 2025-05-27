@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ImageBackground, ScrollView, KeyboardAvoidingView, Platform, Image, Alert } from "react-native";
-import * as ImagePicker from "expo-image-picker"; // Importa o Image Picker para capturar foto
-import { useUser } from "../context/UserContext"; // Importando o contexto
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Image, Alert } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { useUser } from "../context/UserContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { setUserInfo } = useUser(); // Usando o contexto para salvar as informações do usuário
+  const { setUserInfo } = useUser();
 
   const [name, setName] = useState<string>("");
   const [surname, setSurname] = useState<string>("");
@@ -17,9 +18,11 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [neighborhood, setNeighborhood] = useState<string>("");
   const [city, setCity] = useState<string>("");
   const [state, setState] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
-  const [photo, setPhoto] = useState<string | null>(null); // Armazena a foto do usuário
+  const [photo, setPhoto] = useState<string | null>(null);
 
   const validateForm = () => {
     const errors: { [key: string]: string } = {};
@@ -30,6 +33,11 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
     if (!cep) errors.cep = "CEP é obrigatório";
     if (!number) errors.number = "Número é obrigatório";
     if (!address && !street) errors.address = "Endereço é obrigatório";
+    if (!password) errors.password = "Senha é obrigatória";
+    if (!confirmPassword) errors.confirmPassword = "Confirme a senha";
+    if (password && confirmPassword && password !== confirmPassword) {
+      errors.confirmPassword = "As senhas não coincidem";
+    }
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -40,7 +48,6 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
       return;
     }
 
-    // Salvar as informações no contexto global
     setUserInfo({
       name,
       surname,
@@ -54,9 +61,9 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
       city,
       state,
       photo,
+      password,
     });
 
-    // Navegar para a Screen2
     navigation.navigate("Screen2");
   };
 
@@ -84,7 +91,6 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
     }
   };
 
-  // Função para abrir a câmera e capturar a foto
   const handleTakePhoto = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
@@ -100,25 +106,20 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
     });
 
     if (!result.canceled) {
-      setPhoto(result.assets[0].uri); // Armazena o URI da foto capturada
+      setPhoto(result.assets[0].uri);
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <ImageBackground
-          source={require("../assets/Fundo_cadastro.png")}
-          style={styles.background}
-          imageStyle={{ opacity: 0.7 }}
-        >
+    <SafeAreaView style={styles.background}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
           <View style={styles.innerContainer}>
             <Text style={styles.title}>Cadastro</Text>
 
-            
             <TouchableOpacity onPress={handleTakePhoto} style={styles.photoContainer}>
               {photo ? (
                 <Image source={{ uri: photo }} style={styles.photo} />
@@ -159,6 +160,32 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
                 onChangeText={setEmail}
               />
               {formErrors.email && <Text style={styles.errorMessage}>{formErrors.email}</Text>}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Senha</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Digite sua senha"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+              {formErrors.password && <Text style={styles.errorMessage}>{formErrors.password}</Text>}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Confirmar Senha</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Confirme sua senha"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+              {formErrors.confirmPassword && (
+                <Text style={styles.errorMessage}>{formErrors.confirmPassword}</Text>
+              )}
             </View>
 
             <View style={styles.inputContainer}>
@@ -266,19 +293,16 @@ const Screen1: React.FC<{ navigation: any }> = ({ navigation }) => {
               <Text style={styles.link}>Já tem uma conta? Faça login</Text>
             </TouchableOpacity>
           </View>
-        </ImageBackground>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
+    backgroundColor: "#fff",
   },
   container: {
     flex: 1,

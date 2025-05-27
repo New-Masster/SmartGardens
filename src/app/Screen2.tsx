@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, FlatList } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { Button } from "react-native-elements";
-import { useUser } from "../context/UserContext"; // Importando o contexto
+import { useUser } from "../context/UserContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type RootStackParamList = {
   Screen2: { nome: string; carrinho?: any[] };
@@ -18,9 +19,9 @@ type Screen2Props = {
 };
 
 const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
-  const { userInfo, clearUserInfo } = useUser(); // Usa o contexto para acessar as informações do usuário
-  const nome = userInfo.name || "Usuário"; // Nome do usuário vindo do contexto
-  const userPhoto = userInfo.photo; // Foto do usuário vinda do contexto
+  const { userInfo, clearUserInfo } = useUser();
+  const nome = userInfo.name || "Usuário";
+  const userPhoto = userInfo.photo;
   const [selectedImageIndexes, setSelectedImageIndexes] = useState<{ [key: number]: number }>({});
   const [quantidades, setQuantidades] = useState<{ [key: number]: number }>({});
   const [carrinho, setCarrinho] = useState<any[]>(route.params?.carrinho ?? []);
@@ -100,16 +101,12 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
   };
 
   const handleLogout = () => {
-    clearUserInfo(); // Limpa as informações do usuário no contexto
+    clearUserInfo();
     navigation.navigate("Login");
   };
 
   return (
-    <ImageBackground
-      source={require("../assets/Fundo_usuario.png")}
-      style={styles.background}
-      imageStyle={{ opacity: 0.7 }}
-    >
+    <SafeAreaView style={styles.background}>
       <View style={styles.header}>
         <View style={styles.welcomeContainer}>
           <Text style={styles.welcomeText}>Olá, {nome}!</Text>
@@ -121,7 +118,7 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
             <Button
               icon={{ name: "shopping-cart", color: "#FFF" }}
               buttonStyle={styles.iconButton}
-              onPress={() => navigation.navigate("Screen3", { carrinho })} // Mantém o botão do carrinho
+              onPress={() => navigation.navigate("Screen3", { carrinho })}
             />
           </View>
           <TouchableOpacity>
@@ -190,14 +187,15 @@ const Screen2: React.FC<Screen2Props> = ({ navigation, route }) => {
             </View>
           )}
           nestedScrollEnabled
+          contentContainerStyle={{ paddingBottom: 40 }} // Garante espaço extra no final
         />
       </View>
-    </ImageBackground>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  background: { flex: 1, justifyContent: "center", alignItems: "center" },
+  background: { flex: 1, backgroundColor: "#fff" },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",

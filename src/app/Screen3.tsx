@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ImageBackground } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
-import { useUser } from "../context/UserContext"; // Importando o contexto
+import { useUser } from "../context/UserContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type RootStackParamList = {
   Screen3: { carrinho: any[] };
   Screen2: { carrinho: any[] };
-  Payment: undefined; // Falta inserir a rota de pagamento
+  Payment: undefined;
 };
 
 type Screen3Props = {
@@ -17,7 +18,7 @@ type Screen3Props = {
 };
 
 const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
-  const { userInfo } = useUser(); // Acessando informações do usuário pelo contexto
+  const { userInfo } = useUser();
   const [carrinho, setCarrinho] = useState(route.params?.carrinho ?? []);
 
   useEffect(() => {
@@ -56,27 +57,20 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
   };
 
   return (
-    <ImageBackground
-      source={require("../assets/Fundo_carrinho.png")}
-      style={styles.background}
-      imageStyle={{ opacity: 0.7 }}
-    >
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <FontAwesome name="shopping-cart" size={24} color="black" />
-          <Text style={styles.title}>Meu Carrinho</Text>
-        </View>
+    <SafeAreaView style={styles.background}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.container}>
+          <View style={styles.titleContainer}>
+            <FontAwesome name="shopping-cart" size={24} color="black" />
+            <Text style={styles.title}>Meu Carrinho</Text>
+          </View>
 
-        
-        <Text style={styles.userName}>Olá, {userInfo.name || "Usuário"}!</Text>
+          <Text style={styles.userName}>Olá, {userInfo.name || "Usuário"}!</Text>
 
-        {carrinho.length > 0 ? (
-          <>
-            <FlatList
-              data={carrinho}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <View style={styles.productContainer}>
+          {carrinho.length > 0 ? (
+            <>
+              {carrinho.map((item) => (
+                <View style={styles.productContainer} key={item.id}>
                   <Image source={item.imagens[0]} style={styles.productImage} />
                   <View style={styles.productDetails}>
                     <Text style={styles.productName}>{item.nome}</Text>
@@ -107,44 +101,49 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
                     <FontAwesome name="trash" size={24} color="red" />
                   </TouchableOpacity>
                 </View>
-              )}
-            />
-            <View style={styles.totalContainer}>
-              <Text style={styles.totalText}>Total Geral: R$ {calcularTotalGeral()}</Text>
-            </View>
-            <TouchableOpacity style={styles.clearButton} onPress={limparCarrinho}>
-              <FontAwesome name="trash" size={24} color="white" />
-              <Text style={styles.clearButtonText}>Limpar Carrinho</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.paymentButton}
-              onPress={() => navigation.navigate("Payment")} // Falta inserir a rota de pagamento
-            >
-              <FontAwesome name="credit-card" size={24} color="white" />
-              <Text style={styles.paymentButtonText}>Realizar Pagamento</Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <Text style={styles.emptyCartText}>Seu carrinho está vazio.</Text>
-        )}
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("Screen2", { carrinho })} // Navegação para Screen2 com o estado atualizado do carrinho
-        >
-          <FontAwesome name="arrow-left" size={24} color="white" />
-          <Text style={styles.buttonText}>Voltar</Text>
-        </TouchableOpacity>
-      </View>
-    </ImageBackground>
+              ))}
+              <View style={styles.totalContainer}>
+                <Text style={styles.totalText}>Total Geral: R$ {calcularTotalGeral()}</Text>
+              </View>
+              <TouchableOpacity style={styles.clearButton} onPress={limparCarrinho}>
+                <FontAwesome name="trash" size={24} color="white" />
+                <Text style={styles.clearButtonText}>Limpar Carrinho</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.paymentButton}
+                onPress={() => navigation.navigate("Payment")}
+              >
+                <FontAwesome name="credit-card" size={24} color="white" />
+                <Text style={styles.paymentButtonText}>Realizar Pagamento</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text style={styles.emptyCartText}>Seu carrinho está vazio.</Text>
+          )}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate("Screen2", { carrinho })}
+          >
+            <FontAwesome name="arrow-left" size={24} color="white" />
+            <Text style={styles.buttonText}>Voltar</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    justifyContent: "center",
     width: "100%",
     height: "100%",
+    backgroundColor: "#fff",
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
+    paddingBottom: 30, // Garante espaço extra no final
   },
   container: {
     flex: 1,
@@ -267,6 +266,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E90FF",
     padding: 15,
     borderRadius: 10,
+    marginBottom: 30, // Espaço extra para não ficar sobre os botões do sistema
   },
   buttonText: {
     color: "#fff",

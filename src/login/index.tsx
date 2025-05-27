@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image, TextInput, Button, StyleSheet, TouchableOpacity, Modal, Alert, ImageBackground } from "react-native";
+import { View, Text, Image, TextInput, Button, StyleSheet, TouchableOpacity, Modal, Alert } from "react-native";
 
 const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -19,68 +19,62 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   };
 
   return (
-    <ImageBackground
-      source={require("../assets/Fundo.png")}
-      style={styles.backgroundImage}
-      imageStyle={styles.backgroundImageStyle}
-    >
-      <View style={styles.container}>
-        <Image source={require("../assets/Logo.png")} style={styles.logo} />
-        <Text style={styles.title}>Bem-vindo</Text>
-        <Text style={styles.subtitle}>Insira os dados de SmartGardens para continuar</Text>
+    <View style={styles.container}>
+      <Image source={require("../assets/Logo.png")} style={styles.logo} />
+      <Text style={styles.title}>Bem-vindo</Text>
+      <Text style={styles.subtitle}>Insira os dados de SmartGardens para continuar</Text>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>E-mail</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="exemplo@email.com"
-            placeholderTextColor="#aaa"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
-        </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>E-mail</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="exemplo@email.com"
+          placeholderTextColor="#aaa"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+        />
+      </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Senha</Text>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Digite sua senha" 
-            placeholderTextColor="#aaa"
-            secureTextEntry 
-          />
-        </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Senha</Text>
+        <TextInput 
+          style={styles.input} 
+          placeholder="Digite sua senha" 
+          placeholderTextColor="#aaa"
+          secureTextEntry 
+        />
+      </View>
 
-        <Button title="Entrar" onPress={() => navigation.navigate("Screen2", { email })} />
+      <Button title="Entrar" onPress={() => navigation.navigate("Screen2", { email })} />
 
-        <TouchableOpacity onPress={() => navigation.navigate("Screen1")}>
-          <Text style={styles.link}>Não tem uma conta? Cadastre-se aqui</Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("Screen1")}>
+        <Text style={styles.link}>Não tem uma conta? Cadastre-se aqui</Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setForgotPasswordVisible(true)}>
-          <Text style={styles.link}>Esqueceu a senha?</Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={() => setForgotPasswordVisible(true)}>
+        <Text style={styles.link}>Esqueceu a senha?</Text>
+      </TouchableOpacity>
 
-        <Modal visible={forgotPasswordVisible} transparent animationType="slide">
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Recuperação de Senha</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Digite seu e-mail ou telefone"
-                keyboardType="default"
-                value={contact}
-                onChangeText={setContact}
-              />
-              <View style={styles.buttonContainer}>
-                <Button title="Enviar" onPress={handleSend} />
-                <Button title="Cancelar" onPress={() => setForgotPasswordVisible(false)} color="red" />
-              </View>
+      <Modal visible={forgotPasswordVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Recuperação de Senha</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Digite seu e-mail ou telefone"
+              keyboardType="default"
+              value={contact}
+              onChangeText={setContact}
+            />
+            <View style={styles.buttonContainer}>
+              <Button title="Enviar" onPress={handleSend} />
+              <Button title="Cancelar" onPress={() => setForgotPasswordVisible(false)} color="red" />
             </View>
           </View>
-        </Modal>
-      </View>
-    </ImageBackground>
+        </View>
+      </Modal>
+    </View>
   );
 };
 
@@ -92,16 +86,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "rgba(255, 255, 255, 0.3)",
     width: "100%",
-  },
-  backgroundImage: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-  },
-  backgroundImageStyle: {
-    resizeMode: "cover",
   },
   logo: {
     width: 220,
