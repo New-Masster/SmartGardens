@@ -3,6 +3,9 @@ import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ScrollView
 import * as ImagePicker from "expo-image-picker";
 import { useUser } from "../context/UserContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { db } from "../config/firebase";
+import { collection, addDoc } from "firebase/firestore";
+
 
 const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const { setUserInfo } = useUser();
@@ -43,28 +46,55 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleRegister = () => {
-    if (!validateForm()) {
-      return;
-    }
+  const handleRegister = async () => {
+    console.log("handleRegister chamado");
+  if (!validateForm()) {
+    return;
+  }
 
-    setUserInfo({
+  try {
+    const docRef = await addDoc(collection(db, "usuarios"), {
       name,
       surname,
       email,
       phone,
       cep,
-      address,
+      address: address || `${street}, ${neighborhood}, ${city} - ${state}`,
+
       number,
       street,
       neighborhood,
       city,
       state,
       photo,
+      createdAt: new Date(),
     });
 
+    console.log("Usuário registrado com ID:", docRef.id);
+    setUserInfo({
+  name,
+  surname,
+  email,
+  phone,
+  cep,
+  address: address || `${street}, ${neighborhood}, ${city} - ${state}`,  // mesmo valor usado no Firestore
+  number,
+  street,
+  neighborhood,
+  city,
+  state,
+  photo,
+});
+
+    Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
     navigation.navigate("Home");
-  };
+
+  } catch (error) {
+    console.error("Erro ao registrar usuário:", error);
+    Alert.alert("Erro", "Não foi possível completar o cadastro.");
+  }
+};
+
 
   const handleCepChange = async (cepInput: string) => {
     setCep(cepInput);
@@ -315,6 +345,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingHorizontal: 20,
     width: "100%",
+    paddingBottom: 60,
   },
   title: {
     fontSize: 24,

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, Image, TextInput, Button, StyleSheet, TouchableOpacity, Modal, Alert } from "react-native";
+import { auth } from '../config/firebase';
 
 const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [email, setEmail] = useState("");
