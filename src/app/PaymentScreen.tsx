@@ -4,29 +4,29 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const PaymentScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const handlePayment = () => {
-    Alert.alert("Pagamento realizado", "Seu pedido foi finalizado com sucesso!");
+    Alert.alert("Payment completed", "Your order has been successfully placed!");
     navigation.navigate("Home");
   };
 
   return (
     <SafeAreaView style={styles.background}>
       <View style={styles.container}>
-        <Text style={styles.title}>Pagamento</Text>
-        <Text style={styles.subtitle}>Escolha a forma de pagamento e finalize sua compra.</Text>
+        <Text style={styles.title}>Payment</Text>
+        <Text style={styles.subtitle}>Choose the payment method and complete your purchase.</Text>
 
-        {/* Simulação de opções de pagamento */}
+        {/* Payment options simulation */}
         <TouchableOpacity style={styles.paymentOption} onPress={handlePayment}>
-          <Text style={styles.paymentText}>Cartão de Crédito</Text>
+          <Text style={styles.paymentText}>Credit Card</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.paymentOption} onPress={handlePayment}>
           <Text style={styles.paymentText}>Pix</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.paymentOption} onPress={handlePayment}>
-          <Text style={styles.paymentText}>Boleto Bancário</Text>
+          <Text style={styles.paymentText}>Bank Slip</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>Voltar</Text>
+          <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

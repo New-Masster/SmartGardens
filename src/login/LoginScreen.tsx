@@ -8,11 +8,11 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   const handleSend = () => {
     if (contact.includes("@")) {
-      Alert.alert("E-mail enviado", "Verifique sua caixa de entrada.");
+      Alert.alert("Email sent", "Check your inbox.");
     } else if (/^\d+$/.test(contact)) {
-      Alert.alert("SMS enviado", "Verifique suas mensagens.");
+      Alert.alert("SMS sent", "Check your messages.");
     } else {
-      Alert.alert("Erro", "Digite um e-mail ou telefone válido.");
+      Alert.alert("Error", "Enter a valid email or phone number.");
     }
     setForgotPasswordVisible(false);
     setContact("");
@@ -21,14 +21,14 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Image source={require("../assets/Logo.png")} style={styles.logo} />
-      <Text style={styles.title}>Bem-vindo</Text>
-      <Text style={styles.subtitle}>Digite suas credenciais SmartGardens para continuar</Text>
+      <Text style={styles.title}>Welcome</Text>
+      <Text style={styles.subtitle}>Enter your SmartGardens credentials to continue</Text>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>E-mail</Text>
+        <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
-          placeholder="exemplo@email.com"
+          placeholder="example@email.com"
           placeholderTextColor="#aaa"
           keyboardType="email-address"
           value={email}
@@ -37,39 +37,39 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Senha</Text>
+        <Text style={styles.label}>Password</Text>
         <TextInput 
           style={styles.input} 
-          placeholder="Digite sua senha" 
+          placeholder="Enter your password" 
           placeholderTextColor="#aaa"
           secureTextEntry 
         />
       </View>
 
-      <Button title="Entrar" onPress={() => navigation.navigate("Home", { email })} />
+      <Button title="Sign In" onPress={() => navigation.navigate("Home", { email })} />
 
       <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text style={styles.link}>Não tem uma conta? Cadastre-se aqui</Text>
+        <Text style={styles.link}>Don't have an account? Sign up here</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => setForgotPasswordVisible(true)}>
-        <Text style={styles.link}>Esqueceu a senha?</Text>
+        <Text style={styles.link}>Forgot your password?</Text>
       </TouchableOpacity>
 
       <Modal visible={forgotPasswordVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Recuperação de Senha</Text>
+            <Text style={styles.modalTitle}>Password Recovery</Text>
             <TextInput
               style={styles.input}
-              placeholder="Digite seu e-mail ou telefone"
+              placeholder="Enter your email or phone"
               keyboardType="default"
               value={contact}
               onChangeText={setContact}
             />
             <View style={styles.buttonContainer}>
-              <Button title="Enviar" onPress={handleSend} />
-              <Button title="Cancelar" onPress={() => setForgotPasswordVisible(false)} color="red" />
+              <Button title="Send" onPress={handleSend} />
+              <Button title="Cancel" onPress={() => setForgotPasswordVisible(false)} color="red" />
             </View>
           </View>
         </View>

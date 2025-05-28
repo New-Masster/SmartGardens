@@ -26,17 +26,17 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   const validateForm = () => {
     const errors: { [key: string]: string } = {};
-    if (!name) errors.name = "Nome é obrigatório";
-    if (!surname) errors.surname = "Sobrenome é obrigatório";
-    if (!email) errors.email = "E-mail é obrigatório";
-    if (!phone) errors.phone = "Telefone é obrigatório";
-    if (!cep) errors.cep = "CEP é obrigatório";
-    if (!number) errors.number = "Número é obrigatório";
-    if (!address && !street) errors.address = "Endereço é obrigatório";
-    if (!password) errors.password = "Senha é obrigatória";
-    if (!confirmPassword) errors.confirmPassword = "Confirme sua senha";
+    if (!name) errors.name = "Name is required";
+    if (!surname) errors.surname = "Surname is required";
+    if (!email) errors.email = "Email is required";
+    if (!phone) errors.phone = "Phone is required";
+    if (!cep) errors.cep = "ZIP code is required";
+    if (!number) errors.number = "Number is required";
+    if (!address && !street) errors.address = "Address is required";
+    if (!password) errors.password = "Password is required";
+    if (!confirmPassword) errors.confirmPassword = "Confirm your password";
     if (password && confirmPassword && password !== confirmPassword) {
-      errors.confirmPassword = "As senhas não coincidem";
+      errors.confirmPassword = "Passwords do not match";
     }
 
     setFormErrors(errors);
@@ -80,11 +80,11 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
           setState(data.uf);
           setErrorMessage("");
         } else {
-          setErrorMessage("CEP não encontrado. Preencha os dados manualmente.");
+          setErrorMessage("ZIP code not found. Fill in the data manually.");
           setAddress("");
         }
       } catch (error) {
-        setErrorMessage("Erro ao buscar o CEP.");
+        setErrorMessage("Error fetching ZIP code.");
         setAddress("");
       }
     }
@@ -93,7 +93,7 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const handleTakePhoto = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permissão necessária", "Precisamos de acesso à câmera para tirar uma foto.");
+      Alert.alert("Permission required", "We need camera access to take a photo.");
       return;
     }
 
@@ -117,21 +117,21 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
       >
         <ScrollView contentContainerStyle={styles.scrollViewContainer}>
           <View style={styles.innerContainer}>
-            <Text style={styles.title}>Cadastro</Text>
+            <Text style={styles.title}>Register</Text>
 
             <TouchableOpacity onPress={handleTakePhoto} style={styles.photoContainer}>
               {photo ? (
                 <Image source={{ uri: photo }} style={styles.photo} />
               ) : (
-                <Text style={styles.photoPlaceholder}>Tirar Foto</Text>
+                <Text style={styles.photoPlaceholder}>Take Photo</Text>
               )}
             </TouchableOpacity>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Nome</Text>
+              <Text style={styles.label}>Name</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Digite seu nome"
+                placeholder="Enter your name"
                 value={name}
                 onChangeText={setName}
               />
@@ -139,10 +139,10 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Sobrenome</Text>
+              <Text style={styles.label}>Surname</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Digite seu sobrenome"
+                placeholder="Enter your surname"
                 value={surname}
                 onChangeText={setSurname}
               />
@@ -150,10 +150,10 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>E-mail</Text>
+              <Text style={styles.label}>Email</Text>
               <TextInput
                 style={styles.input}
-                placeholder="exemplo@email.com"
+                placeholder="example@email.com"
                 keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
@@ -162,10 +162,10 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Senha</Text>
+              <Text style={styles.label}>Password</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Digite sua senha"
+                placeholder="Enter your password"
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
@@ -174,10 +174,10 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Confirme a Senha</Text>
+              <Text style={styles.label}>Confirm Password</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Confirme sua senha"
+                placeholder="Confirm your password"
                 secureTextEntry
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
@@ -188,7 +188,7 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Telefone</Text>
+              <Text style={styles.label}>Phone</Text>
               <TextInput
                 style={styles.input}
                 placeholder="(XX) 99999-9999"
@@ -200,7 +200,7 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>CEP</Text>
+              <Text style={styles.label}>ZIP code</Text>
               <TextInput
                 style={styles.input}
                 placeholder="57000-000"
@@ -213,10 +213,10 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
             {address ? (
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Endereço</Text>
+                <Text style={styles.label}>Address</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Endereço"
+                  placeholder="Address"
                   value={address}
                   editable={false}
                 />
@@ -232,10 +232,10 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             {address === "" && errorMessage && (
               <>
                 <View style={styles.inputContainer}>
-                  <Text style={styles.label}>Rua</Text>
+                  <Text style={styles.label}>Street</Text>
                   <TextInput
                     style={styles.input}
-                    placeholder="Digite a rua"
+                    placeholder="Enter the street"
                     value={street}
                     onChangeText={setStreet}
                   />
@@ -243,30 +243,30 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                 </View>
 
                 <View style={styles.inputContainer}>
-                  <Text style={styles.label}>Bairro</Text>
+                  <Text style={styles.label}>Neighborhood</Text>
                   <TextInput
                     style={styles.input}
-                    placeholder="Digite o bairro"
+                    placeholder="Enter the neighborhood"
                     value={neighborhood}
                     onChangeText={setNeighborhood}
                   />
                 </View>
 
                 <View style={styles.inputContainer}>
-                  <Text style={styles.label}>Cidade</Text>
+                  <Text style={styles.label}>City</Text>
                   <TextInput
                     style={styles.input}
-                    placeholder="Digite a cidade"
+                    placeholder="Enter the city"
                     value={city}
                     onChangeText={setCity}
                   />
                 </View>
 
                 <View style={styles.inputContainer}>
-                  <Text style={styles.label}>Estado</Text>
+                  <Text style={styles.label}>State</Text>
                   <TextInput
                     style={styles.input}
-                    placeholder="Digite o estado"
+                    placeholder="Enter the state"
                     value={state}
                     onChangeText={setState}
                   />
@@ -275,10 +275,10 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             )}
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Número</Text>
+              <Text style={styles.label}>Number</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Número da casa"
+                placeholder="House number"
                 keyboardType="numeric"
                 value={number}
                 onChangeText={setNumber}
@@ -286,10 +286,10 @@ const RegisterScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
               {formErrors.number && <Text style={styles.errorMessage}>{formErrors.number}</Text>}
             </View>
 
-            <Button title="Cadastrar" onPress={handleRegister} />
+            <Button title="Register" onPress={handleRegister} />
 
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <Text style={styles.link}>Já tem uma conta? Entrar</Text>
+              <Text style={styles.link}>Already have an account? Sign in</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

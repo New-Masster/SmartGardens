@@ -28,7 +28,7 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({ navigation, r
   };
 
   const handleAddToCart = () => {
-    Alert.alert("Sucesso", "Produto adicionado ao carrinho!");
+    Alert.alert("Success", "Product added to cart!");
     navigation.navigate("Cart", {
       cart: [{ id, name, price, quantity: 1, images, description }],
     });
@@ -49,14 +49,14 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({ navigation, r
       <Text style={styles.productPrice}>{price}</Text>
       <Text style={styles.productDescription}>{description}</Text>
 
-      <Text style={styles.userName}>Olá, {userInfo.name || "Usuário"}!</Text>
+      <Text style={styles.userName}>Hello, {userInfo.name || "User"}!</Text>
 
       <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
-        <Text style={styles.buttonText}>Adicionar ao Carrinho</Text>
+        <Text style={styles.buttonText}>Add to Cart</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>Voltar</Text>
+        <Text style={styles.backButtonText}>Back</Text>
       </TouchableOpacity>
     </View>
   );

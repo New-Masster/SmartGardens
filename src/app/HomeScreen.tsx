@@ -20,7 +20,7 @@ type HomeScreenProps = {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const { userInfo, clearUserInfo } = useUser();
-  const name = userInfo.name || "Usuário";
+  const name = userInfo.name || "User";
   const userPhoto = userInfo.photo;
   const [selectedImageIndexes, setSelectedImageIndexes] = useState<{ [key: number]: number }>({});
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
@@ -35,36 +35,36 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const products = [
     {
       id: 1,
-      name: "Bancada Hidropônica",
+      name: "Hydroponic Bench",
       images: [
         require("../assets/Bancada Hidropônica 0.png"),
         require("../assets/Bancada Hidropônica 1.png"),
         require("../assets/Bancada Hidropônica 2.png"),
       ],
       price: "R$ 687,00",
-      description: "Uma linda bancada hidropônica para decorar seu espaço.",
+      description: "A beautiful hydroponic bench to decorate your space.",
     },
     {
       id: 2,
-      name: "Caixa Hidropônica",
+      name: "Hydroponic Box",
       images: [
         require("../assets/Caixa Hidropônica 0.png"),
         require("../assets/Caixa Hidropônica 1.png"),
         require("../assets/Caixa Hidropônica 2.png"),
       ],
       price: "R$ 302,99",
-      description: "Ideal para purificar o ar e decorar ambientes internos.",
+      description: "Ideal for purifying the air and decorating indoor environments.",
     },
     {
       id: 3,
-      name: "Horta Hidropônica",
+      name: "Hydroponic Garden",
       images: [
         require("../assets/Horta Hidropônica 0.png"),
         require("../assets/Horta Hidropônica 1.png"),
         require("../assets/Horta Hidropônica 2.png"),
       ],
       price: "R$ 59,90",
-      description: "Horta elegante para dar um toque especial à sua decoração.",
+      description: "Elegant garden to give a special touch to your decor.",
     },
   ];
 
@@ -119,8 +119,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     <SafeAreaView style={styles.background}>
       <View style={styles.header}>
         <View style={styles.welcomeContainer}>
-          <Text style={styles.welcomeText}>Olá, {name}!</Text>
-          <Text style={styles.subtitle}>Bem-vindo!</Text>
+          <Text style={styles.welcomeText}>Hello, {name}!</Text>
+          <Text style={styles.subtitle}>Welcome!</Text>
         </View>
 
         <View style={styles.profileContainer}>
@@ -139,13 +139,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
             )}
           </TouchableOpacity>
           <TouchableOpacity onPress={handleLogout} style={styles.logoutContainer}>
-            <Text style={styles.logout}>Sair</Text>
+            <Text style={styles.logout}>Logout</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       <View style={styles.productsContainer}>
-        <Text style={styles.title}>Produtos</Text>
+        <Text style={styles.title}>Products</Text>
         <FlatList
           data={products}
           keyExtractor={(item) => item.id.toString()}
@@ -192,7 +192,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
                 onPress={() => addToCart(item.id)}
                 style={styles.addToCartButton}
               >
-                <Text style={styles.addToCartText}>Adicionar ao Carrinho</Text>
+                <Text style={styles.addToCartText}>Add to Cart</Text>
               </TouchableOpacity>
             </View>
           )}

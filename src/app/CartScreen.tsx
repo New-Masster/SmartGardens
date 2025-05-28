@@ -62,10 +62,10 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation, route }) => {
         <View style={styles.container}>
           <View style={styles.titleContainer}>
             <FontAwesome name="shopping-cart" size={24} color="black" />
-            <Text style={styles.title}>Meu Carrinho</Text>
+            <Text style={styles.title}>My Cart</Text>
           </View>
 
-          <Text style={styles.userName}>Olá, {userInfo.name || "Usuário"}!</Text>
+          <Text style={styles.userName}>Hello, {userInfo.name || "User"}!</Text>
 
           {cart.length > 0 ? (
             <>
@@ -74,7 +74,7 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation, route }) => {
                   <Image source={item.imagens[0]} style={styles.productImage} />
                   <View style={styles.productDetails}>
                     <Text style={styles.productName}>{item.nome}</Text>
-                    <Text style={styles.productPrice}>Preço unitário: {item.preco}</Text>
+                    <Text style={styles.productPrice}>Unit price: {item.preco}</Text>
                     <View style={styles.quantityContainer}>
                       <TouchableOpacity
                         onPress={() => changeQuantity(item.id, -1)}
@@ -107,25 +107,25 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation, route }) => {
               </View>
               <TouchableOpacity style={styles.clearButton} onPress={clearCart}>
                 <FontAwesome name="trash" size={24} color="white" />
-                <Text style={styles.clearButtonText}>Esvaziar Carrinho</Text>
+                <Text style={styles.clearButtonText}>Empty Cart</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.paymentButton}
                 onPress={() => navigation.navigate("Payment")}
               >
                 <FontAwesome name="credit-card" size={24} color="white" />
-                <Text style={styles.paymentButtonText}>Finalizar Compra</Text>
+                <Text style={styles.paymentButtonText}>Checkout</Text>
               </TouchableOpacity>
             </>
           ) : (
-            <Text style={styles.emptyCartText}>Seu carrinho está vazio.</Text>
+            <Text style={styles.emptyCartText}>Your cart is empty.</Text>
           )}
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate("Home", { cart })}
           >
             <FontAwesome name="arrow-left" size={24} color="white" />
-            <Text style={styles.buttonText}>Voltar</Text>
+            <Text style={styles.buttonText}>Back</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
